@@ -43,7 +43,7 @@ class Episode extends StatelessWidget {
                 episode.title,
                 style: const TextStyle(
                   color: Color(0xFF232B55),
-                  fontSize: 15,
+                  fontSize: 10,
                   fontWeight: FontWeight.bold,
                 ),
               ),

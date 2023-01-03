@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watoon/watoon/models/watoon_detail_model.dart';
 import 'package:watoon/watoon/models/watoon_episode_model.dart';
 import 'package:watoon/watoon/services/api_service.dart';
@@ -20,12 +21,52 @@ class WatoonDetail extends StatefulWidget {
 class _WatoonDetailState extends State<WatoonDetail> {
   late Future<WatoonDetailModel> watoon;
   late Future<List<WatoonEpisodeModel>> epLists;
+  late SharedPreferences prefs;
+  bool isLlike = false;
 
   @override
   void initState() {
     super.initState();
-    watoon = ApiService.getWatoonDetail(widget.watoonId);
-    epLists = ApiService.getEpisode(widget.watoonId);
+    watoon = ApiService.getWatoonDetail(widget.watoonId); // 웹툰 정보 가져오기
+    epLists = ApiService.getEpisode(widget.watoonId); // 해당 웹툰 에피소드 리스트 가져오기
+    initPref(); // 사용자 휴대폰 저장소와 연결
+  }
+
+  // 사용자 휴대폰저장소와 연결 함수
+  Future initPref() async {
+    prefs = await SharedPreferences.getInstance(); // 연결
+    final likedWatoons = prefs.getStringList('likedWatoons'); // 좋아요 리스트 가져오기
+
+    // 좋아요 누른 웹툰일 경우, isLike = true
+    if (likedWatoons != null) {
+      if (likedWatoons.contains(widget.watoonId) == true) {
+        setState(() {
+          isLlike = true;
+        });
+      }
+    } else {
+      await prefs.setStringList('likedWatoons', []);
+    }
+  }
+
+  // 좋아요 클릭 함수
+  onLikeClick() async {
+    final likedWatoons = prefs.getStringList('likedWatoons'); // 좋아요 리스트 가져오기
+
+    // 기존 isLike 값에 따라 좋아요 리스트에 삭제 및 추가
+    if (likedWatoons != null) {
+      if (isLlike) {
+        likedWatoons.remove(widget.watoonId);
+      } else {
+        likedWatoons.add(widget.watoonId);
+      }
+      // 휴대폰 저장소에 변경된 좋아요 리스트 저장
+      await prefs.setStringList('likedWatoons', likedWatoons);
+      // isLike 값 변경
+      setState(() {
+        isLlike = !isLlike;
+      });
+    }
   }
 
   // hashtag 변환 함수
@@ -50,11 +91,13 @@ class _WatoonDetailState extends State<WatoonDetail> {
         foregroundColor: const Color(0xFF232B55),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.favorite_outline_outlined,
+            onPressed: onLikeClick,
+            icon: Icon(
+              isLlike
+                  ? Icons.favorite_outlined
+                  : Icons.favorite_outline_outlined,
             ),
-          )
+          ),
         ],
         title: Text(
           widget.watoonTitle,
