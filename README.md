@@ -1,16 +1,17 @@
-# watoon
+# POMODORO with Flutter
 
-A new Flutter project.
+25분 타이머 기능 앱
 
-## Getting Started
+<br>
 
-This project is a starting point for a Flutter application.
+# WALLET with Flutter
 
-A few resources to get you started if this is your first Flutter project:
+위젯 연습
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<br>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# WATOON with Flutter
+
+- `네이버웹툰 API`를 통해 목록 보여주기
+- 웹툰 상세 페이지 구현 및 실제 웹툰 페이지로 이동
+- `SharedPreference`를 통하여 좋아요 기능 구현
